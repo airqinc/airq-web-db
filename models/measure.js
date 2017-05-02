@@ -1,18 +1,27 @@
-const mongoose = require('mongoose');
-const Schema  = mongoose.Schema;
+var mongoose = require('mongoose'),
+    Schema   = mongoose.Schema,
+    ObjectId = mongoose.Schema.Types.ObjectId,
+    Station = mongoose.model('Station');
 
-var Measure = new Schema({  
-  timestamp:    { type: Date, required: true},
-  idx:          { type: Number, required: true},
-  dominentpol:  String
-  iaqui: {
-      co:       { type: Number, min: 0, max: 500},
-      no2:      { type: Number, min: 0, max: 500},
-      o3:       { type: Number, min: 0, max: 500},
-      pm10:     { type: Number, min: 0, max: 500},
-      pm25:     { type: Number, min: 0, max: 500},
-      so2:      { type: Number, min: 0, max: 500},
-  }
+var measureSchema = new Schema({
+    id_station:   { type: ObjectId, required: true, ref: "Station"},
+    timestamp:    { type: Date, required: true},    
+    dominentpol:  { type: String, enum: ['co', 'pm25', 'pm10', 'co', 'so2', 'no2']},
+    iaqui: {
+        o3:       { type: Number, min: 0, max: 500},
+        pm25:     { type: Number, min: 0, max: 500},
+        pm10:     { type: Number, min: 0, max: 500},
+        co:       { type: Number, min: 0, max: 500},
+        so2:      { type: Number, min: 0, max: 500},
+        no2:      { type: Number, min: 0, max: 500},
+    },
+    id_station:   { type: ObjectId, required: true, ref: "Station"},
 });
 
-module.exports.User = mongoose.model("measure", Measure);
+measureSchema.index({ id_station: 1, timestamp: 1}, { unique: true });
+
+measureSchema.query.byTime = function(id_station, timestamp) {
+  return this.findOne({ id_station: id_station, timestamp: timestamp });
+};
+
+module.exports.Measure = mongoose.model("Measure", measureSchema);

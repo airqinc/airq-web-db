@@ -1,11 +1,13 @@
-const mongoose = require('mongoose');
-const Schema  = mongoose.Schema;
+var mongoose = require('mongoose'),
+	Schema   = mongoose.Schema,
+	ObjectId = mongoose.Schema.Types.ObjectId,
+	Zone = mongoose.model('Zone');
 
-var Station = new Schema({
-  idx:      { type: Number, required: true, index: { unique: true } },
-  id_zone:  { type: Number, required: true},
-  name:     { type: String, required: true, index: { unique: true } },
-  geo:      [Number]
+var stationSchema = new Schema({
+	id_zone:  	{ type: ObjectId, required: true, ref: "Zone"},
+	name:     	{ type: String, required: true},
+	latitude:   Number,
+	longitude: 	Number
 });
 
-module.exports.User = mongoose.model("station", Station);
+module.exports.Station = mongoose.model("Station", stationSchema);
