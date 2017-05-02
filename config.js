@@ -1,13 +1,17 @@
 module.exports = {
   name: 'AirQ',
-  description: 'Web Oficial de AirQ',
+  description: 'AirQ storage server',
   domain: 'localhost',
   url: 'http://localhost',
   env: 'development',
   port: 3000,
 
-  database: {
+  db1: {
     domain: 'localhost',
-    name: 'nameDb'
+    name: 'db_static'
+  },
+  db2: {
+    domain: 'localhost',
+    name: 'db_clean'
   }
 }
