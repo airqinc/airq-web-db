@@ -1,12 +1,19 @@
 var mongoose = require('mongoose'),
-// mongoURI = 'mongodb://user:password@localhost:27017/dbOne';
-    //mongoURI = 'mongodb://localhost:27017/db_static';
-    mongoURI = 'mongodb://albermorap:airQ1234@ds127321.mlab.com:27321/db_static';
+    settings = require('./config'),
+    connections = {};
 
-module.exports = connect_db_static = mongoose.createConnection(mongoURI);
+mongoose.Promise = global.Promise;
 
-connect_db_static.on('connected', function() {  
-  console.log('Mongoose connected to db_static');
-});
+for (var db_id in settings.dbs){
+	var db = settings.dbs[db_id];
+	var mongoURI = db.domain + db.name;
 
-require('./models/zone') 
+	connections[db.name] = mongoose.createConnection(mongoURI);
+
+	connections[db.name].on("error", console.error.bind(console, db.name+': Connection error:'));
+	connections[db.name].on('connected', function() {
+		console.log('Connection to '+db.name+' successful');
+	});
+}
+
+module.exports = connections

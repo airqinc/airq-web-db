@@ -1,10 +1,11 @@
 var mongoose = require('mongoose'),
-	connect_db_static = require('../db');
-	Schema   = mongoose.Schema,
+	dbs = require('../config').dbs,
+	connections = require('../db'),
 	ObjectId = mongoose.Schema.Types.ObjectId;
 
-var zoneSchema = new Schema({
-	name: 	{ type: String, required: true },
+var zoneSchema = new mongoose.Schema({
+	name: 			{ type: String, required: true, index: true, unique: true },
+	description: 	{ type: String, required: true },
 	city: {
 		name: 		String,
 		zip: 		String,
@@ -16,83 +17,71 @@ var zoneSchema = new Schema({
 });
 
 //OPERACIONES
-var Zone = connect_db_static.model('Zone', zoneSchema);
+var Zone = connections[dbs.db2.name].model('Zone', zoneSchema);
 
-exports.findAll = function(req, cb) {
+exports.all = function(cb) {
 	Zone.find({}, cb);
 };
 
-exports.findById = function(req, cb) {
-	Zone.findById(req.params.id, cb);
+exports.findByName = function(name, cb) {
+	Zone.findOne({"name": name}, cb);
 };
 
-exports.addZone = function(req, cb) {
+exports.add = function(newZone, cb) {
 	var zone = new Zone({
-		name:   	req.body.name,
+		name: 			newZone.name,
+		description:   	newZone.description,
 		city: {
-			name: 	req.body.city_name,
-			zip: 	req.body.city_zip,
+			name: 		newZone.city_name,
+			zip: 		newZone.city_zip,
 		},
-		area: 		req.body.area,
-		time_zone: 	req.body.time_zone,
+		area: 			newZone.area,
+		time_zone: 		newZone.time_zone,
 	});
 
 	zone.save(cb);
 };
 
-/*exports.addStation = function(req, res) {
-	Zone.findById(req.params.id, function(err, zone) {
-		console.log(film)
+exports.update = function(name, newZone, cb) {
+	Zone.findOne({"name": name}, function(err, zone) {
+		zone.description 	= newZone.description || zone.description;
+		zone.city.name 		= newZone.city.name || zone.city.name;
+		zone.city.zip		= newZone.city.zip || zone.city.zip;
+		zone.area			= newZone.area || zone.area;
+		zone.time_zone 		= newZone.time_zone || zone.time_zone;
 
-		var comment = {
-			"username": req.params.username,
-			"stars": 	req.body.stars,
-			"text": 	req.body.text,
-			"date": 	(new Date())
+		zone.save(cb);
+	});
+};
+
+exports.delete = function(name, cb) {
+	Zone.findOneAndRemove({"name": name}, cb);
+};
+
+
+//OPERACIONES ADICIONALES
+
+exports.addStation = function(name, id_station) {
+	Zone.findOne({"name": name}, function(err, zone) {
+		if (zone.stations.indexOf(id_station) == -1){
+			zone.stations.push(id_station);
+			zone.save(function(err, data) {
+			    if(err) return res.status(500).send(err.message);
+			});
+		}		
+	});
+};
+
+exports.deleteStation = function(name, id_station) {
+	Zone.findOne({"name": name}, function(err, zone) {
+		var index = zone.stations.indexOf(id_station)
+
+		if (index != -1){
+			zone.stations.splice(index, 1);
+
+			zone.save(function(err, data) {
+			    if(err) return res.status(500).send(err.message);
+			});
 		}
-
-		film.comments.push(comment);
-
-		film.save(function(err) {
-			if(err) return res.send(500, err.message);
-			res.status(200).jsonp(film);
-		});
 	});
 };
-
-exports.deleteComment = function(req, res) {
-	Film.findById(req.params.filmid, function(err, film) {
-		for (i = 0; i < film.comments.length; i++){
-			if (film.comments[i] == req.params.commentid)
-				array.splice(i, 1)
-		}
-
-		film.save(function(err) {
-			if(err) return res.send(500, err.message);
-			res.status(200).jsonp(film);
-		});
-	});
-};
-
-// CORREGIR
-exports.updateFilm = function(req, res) {
-	Film.findById(req.params.id, function(err, film) {
-		//film.title    = req.body.title;
-		film.poster   = req.body.poster;
-
-		film.save(function(err) {
-			if(err) return res.send(500, err.message);
-      		res.status(200).jsonp(film);
-		});
-	});
-};
-
-//DELETE - Delete a Film with specified ID
-exports.deleteFilm = function(req, res) {
-	Film.findById(req.params.id, function(err, film) {
-		film.remove(function(err) {
-			if(err) return res.send(500, err.message);
-      		res.status(200);
-		})
-	});
-};*/

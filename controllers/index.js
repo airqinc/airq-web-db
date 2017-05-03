@@ -4,7 +4,7 @@ var express = require('express'),
 var dataModel = require('../models/data');
 
 router.use('/zones', require('./zones'))
-//router.use('/users', require('./users'))
+router.use('/stations', require('./stations'))
 
 router.get("/", function(req, res)
 {

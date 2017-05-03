@@ -5,34 +5,67 @@ var express = require('express'),
 
 //GET - Devuelve todas las zonas disponibles
 router.get('/', function(req, res) {
-	Zone.findAll(req, function(err, zones) {
-	    if(err) return res.send(500, err.message);
-		res.status(200).jsonp(zones);
+	Zone.all(function(err, data) {
+	    if(err) return res.status(500).send(err.message);
+		res.status(200).jsonp(data);
 	})
 })
 
-//GET - Devuelve una zona por ID
-router.get('/:id', function(req, res) {
-	Zone.findById(req, function(err, zone) {
-    	if(err) return res.send(500, err.message);
-		res.status(200).jsonp(zone);
+//GET - Devuelve una zona por nombre
+router.get('/:name', function(req, res) {
+	Zone.findByName(req.params.name, function(err, data) {
+	    if(err) return res.status(500).send(err.message);
+		res.status(200).jsonp(data);
 	})
 })
-
-//POST
-/*router.post('/', auth, function(req, res) {
-	Zone.addZone(req, function(err, zone) {
-		if(err) return res.send(500, err.message);
-		res.status(200).jsonp(zone);
-	})
-})*/
 
 //POST - Crear una nueva zona
 router.post('/', function(req, res) {
-	Zone.addZone(req, function(err, zone) {
-		if(err) return res.status(500).send(err.message);
-		res.status(200).jsonp(zone);
+	var zone = {
+		name: 			req.body.name,
+		description:   	req.body.description,
+		city: {
+			name: 		req.body.city_name,
+			zip: 		req.body.city_zip,
+		},
+		area: 			req.body.area,
+		time_zone: 		req.body.time_zone,
+	};
+
+
+	Zone.add(zone, function(err, data) {
+	    if(err) return res.status(500).send(err.message);
+		res.status(200).jsonp(data);
 	})
 })
 
-module.exports = router
+//UPDATE - Actualiza una zona
+router.put('/:name', function(req, res) {
+	var zone = {
+		description:   	req.body.description,
+		city: {
+			name: 		req.body.city_name,
+			zip: 		req.body.city_zip,
+		},
+		area: 			req.body.area,
+		time_zone: 		req.body.time_zone,
+	};
+
+
+	Zone.update(req.params.name, zone, function(err, data) {
+	    if(err) return res.status(500).send(err.message);
+		res.status(200).jsonp(data);
+	})
+})
+
+//DELETE - Borra una zona
+router.delete('/:name', function(req, res) {
+	Zone.delete(req.params.name, function(err, zone) {
+		if(err) return res.status(500).send(err.message);
+  		res.status(200).send(zone.name);
+	})
+})
+
+
+
+module.exports = router;
