@@ -22,7 +22,8 @@ router.get('/:id', function(req, res) {
 router.post('/', function(req, res) {
 	var measure = {
         station:        req.body.station,
-        timestamp:      req.body.timestamp,
+        datetime:       req.body.datetime,
+        dayName:        req.body.dayName,
         dominentpol:    req.body.dominentpol,
         iaqi: {
             o3:         req.body.iaqi.o3,
@@ -30,7 +31,18 @@ router.post('/', function(req, res) {
             pm10:       req.body.iaqi.pm10,
             co:         req.body.iaqi.co,
             so2:        req.body.iaqi.so2,
-            no2:        req.body.iaqi.no2
+            no2:        req.body.iaqi.no2,
+            t:          req.body.iaqi.t,
+            h:          req.body.iaqi.h,
+            p:          req.body.iaqi.p
+        },
+        aemet: {
+            temperature:    req.body.aemet.temperature, 
+            windSpeed:      req.body.aemet.windSpeed, 
+            rainfall:       req.body.aemet.rainfall, 
+            windChill:      req.body.aemet.windChill, 
+            windDirection:  req.body.aemet.windDirection,
+            humidity:       req.body.aemet.humidity
         }
     };
 
@@ -44,7 +56,8 @@ router.post('/', function(req, res) {
 router.put('/:id', function(req, res) {
 	var measure = {
         station:        req.body.station,
-        timestamp:      req.body.timestamp,
+        datetime:       req.body.datetime,
+        dayName:        req.body.dayName,
         dominentpol:    req.body.dominentpol,
         iaqi: {
             o3:         req.body.iaqi.o3,
@@ -52,7 +65,18 @@ router.put('/:id', function(req, res) {
             pm10:       req.body.iaqi.pm10,
             co:         req.body.iaqi.co,
             so2:        req.body.iaqi.so2,
-            no2:        req.body.iaqi.no2
+            no2:        req.body.iaqi.no2,
+            t:          req.body.iaqi.t,
+            h:          req.body.iaqi.h,
+            p:          req.body.iaqi.p
+        },
+        aemet: {
+            temperature:    req.body.temperature, 
+            windSpeed:      req.body.windSpeed, 
+            rainfall:       req.body.rainfall, 
+            windChill:      req.body.windChill, 
+            windDirection:  req.body.windDirection,
+            humidity:       req.body.humidity
         }
     };
 

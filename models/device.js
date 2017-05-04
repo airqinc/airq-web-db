@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
 
 var deviceSchema = new mongoose.Schema({
 	station:  		{ type: String, required: true},
-	last_update: 	Date,
+	last_update: 	String,
 	sw_version:   	String
 });
 
@@ -23,7 +23,7 @@ exports.get = function(id, cb) {
 exports.add = function(newDevice, cb) {
 	var device = new Device({
 		station: 		newDevice.station,
-		last_update:   	Date(newDevice.last_update),
+		last_update:   	newDevice.last_update,
 		sw_version: 	newDevice.sw_version
 	});
 
