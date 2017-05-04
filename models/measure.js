@@ -4,7 +4,6 @@ var mongoose = require('mongoose'),
     ObjectId = mongoose.Schema.Types.ObjectId;
 
 var measureSchema = new mongoose.Schema({
-    zone:           { type: String, required: true},
     station:        { type: String, required: true},
     timestamp:      { type: Date, required: true},    
     dominentpol:    { type: String, enum: ['o3', 'pm25', 'pm10', 'co', 'so2', 'no2']},
@@ -15,8 +14,7 @@ var measureSchema = new mongoose.Schema({
         co:         { type: Number, min: 0, max: 500},
         so2:        { type: Number, min: 0, max: 500},
         no2:        { type: Number, min: 0, max: 500},
-    },
-    id_device:      { type: ObjectId, required: true, ref: "Sensor"},
+    }
 });
 
 measureSchema.index({ zone: 1, station: 1, timestamp: 1}, { unique: true });
@@ -39,9 +37,8 @@ exports.get = function(id, cb) {
 
 exports.add = function(newMeasure, cb) {
     var measure = new Measure({
-        zone:           newMeasure.zone,
         station:        newMeasure.station,
-        timestamp:      newMeasure.timestamp,
+        timestamp:      Date(newMeasure.timestamp),
         dominentpol:    newMeasure.dominentpol,
         iaqi: {
             o3:         newMeasure.iaqi.o3,
@@ -50,8 +47,7 @@ exports.add = function(newMeasure, cb) {
             co:         newMeasure.iaqi.co,
             so2:        newMeasure.iaqi.so2,
             no2:        newMeasure.iaqi.no2
-        },
-        id_device:      newMeasure.id_device
+        }
     });
 
     measure.save(cb);
@@ -59,7 +55,6 @@ exports.add = function(newMeasure, cb) {
 
 exports.update = function(name, newMeasure, cb) {
     Measure.findById(id, function(err, measure) {
-        measure.zone        = newMeasure.zone || measure.zone;
         measure.station     = newMeasure.station || measure.station;
         measure.timestamp   = newMeasure.timestamp || measure.timestamp;
         measure.dominentpol = newMeasure.dominentpol || measure.dominentpol;
@@ -69,7 +64,6 @@ exports.update = function(name, newMeasure, cb) {
         measure.iaqi.co     = newMeasure.iaqi.co || measure.iaqi.co;
         measure.iaqi.so2    = newMeasure.iaqi.so2 || measure.iaqi.so2;
         measure.iaqi.no2    = newMeasure.iaqi.no2 || measure.iaqi.no2;
-        measure.id_device   = newMeasure.id_device || measure.id_device;
         
         measure.save(cb);
     });

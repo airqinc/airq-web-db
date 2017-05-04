@@ -3,13 +3,12 @@ var mongoose = require('mongoose'),
 	connections = require('../db');
 
 var stationSchema = new mongoose.Schema({
+	_id: 		String,
 	zone:  		{ type: String, required: true},
 	name:     	{ type: String, required: true},
 	latitude:   Number,
 	longitude: 	Number
 });
-
-measureSchema.index({ zone: 1, name: 1}, { unique: true });
 
 var Station = connections[dbs.db2.name].model("Station", stationSchema);
 
@@ -19,12 +18,13 @@ exports.all = function(cb) {
 	Station.find({}, cb);
 };
 
-exports.get = function(name, cb) {
-	Station.findOne({"name": name}, cb);
+exports.get = function(id, cb) {
+	Station.findById(id, cb);
 };
 
 exports.add = function(newStation, cb) {
 	var station = new Station({
+		_id: 		newStation.zone+'-'+newStation.name,
 		zone: 		newStation.zone,
 		name:   	newStation.name,
 		latitude: 	newStation.latitude,
@@ -35,7 +35,7 @@ exports.add = function(newStation, cb) {
 };
 
 exports.update = function(name, newStation, cb) {
-	Station.findOne({"name": name}, function(err, station) {
+	Station.findById(id, function(err, station) {
 		station.latitude 	= newStation.latitude || station.latitude;
 		station.longitude 	= newStation.longitude || station.longitude;
 
@@ -43,6 +43,6 @@ exports.update = function(name, newStation, cb) {
 	});
 };
 
-exports.delete = function(name, cb) {
-	Station.findOneAndRemove({"name": name}, cb);
+exports.delete = function(id, cb) {
+	Station.findByIdAndRemove(id, cb);
 };

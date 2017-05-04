@@ -12,7 +12,7 @@ var zoneSchema = new mongoose.Schema({
 	},
 	area: 			Number,
 	time_zone: 		Number,
-	stations: 		[ObjectId],
+	stations: 		[String],
 	suscriptions: 	[ObjectId]	
 });
 
@@ -62,8 +62,8 @@ exports.delete = function(name, cb) {
 
 //OPERACIONES ADICIONALES
 
-exports.addStation = function(name, station) {
-	Zone.findOne({"name": name}, function(err, zone) {
+exports.addStation = function(zone, station) {
+	Zone.findOne({"name": zone}, function(err, zone) {
 		if (zone.stations.indexOf(station) == -1){
 			zone.stations.push(station);
 			zone.save(function(err, data) {
@@ -73,8 +73,8 @@ exports.addStation = function(name, station) {
 	});
 };
 
-exports.deleteStation = function(name, station) {
-	Zone.findOne({"name": name}, function(err, zone) {
+exports.deleteStation = function(zone, station) {
+	Zone.findOne({"name": zone}, function(err, zone) {
 		var index = zone.stations.indexOf(station)
 
 		if (index != -1){

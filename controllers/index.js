@@ -1,8 +1,6 @@
 var express = require('express'),
     router = express.Router()
 
-var dataModel = require('../models/data');
-
 router.use('/zones', require('./zones'))
 router.use('/stations', require('./stations'))
 router.use('/devices', require('./devices'))

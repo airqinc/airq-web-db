@@ -21,7 +21,6 @@ router.get('/:id', function(req, res) {
 //POST - Crear una nueva medida
 router.post('/', function(req, res) {
 	var measure = {
-        zone:           req.body.zone,
         station:        req.body.station,
         timestamp:      req.body.timestamp,
         dominentpol:    req.body.dominentpol,
@@ -32,8 +31,7 @@ router.post('/', function(req, res) {
             co:         req.body.iaqi.co,
             so2:        req.body.iaqi.so2,
             no2:        req.body.iaqi.no2
-        },
-        id_device:      req.body.id_device
+        }
     };
 
 	Measure.add(measure, function(err, newMeasure) {
@@ -45,7 +43,6 @@ router.post('/', function(req, res) {
 //UPDATE - Actualiza una medida
 router.put('/:id', function(req, res) {
 	var measure = {
-        zone:           req.body.zone,
         station:        req.body.station,
         timestamp:      req.body.timestamp,
         dominentpol:    req.body.dominentpol,
@@ -56,8 +53,7 @@ router.put('/:id', function(req, res) {
             co:         req.body.iaqi.co,
             so2:        req.body.iaqi.so2,
             no2:        req.body.iaqi.no2
-        },
-        id_device:      req.body.id_device
+        }
     };
 
 	Measure.update(req.params.id, measure, function(err, data) {
