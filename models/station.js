@@ -9,15 +9,18 @@ var stationSchema = new mongoose.Schema({
 	longitude: 	Number
 });
 
-//OPERACIONES
+measureSchema.index({ zone: 1, name: 1}, { unique: true });
+
 var Station = connections[dbs.db2.name].model("Station", stationSchema);
+
+//OPERACIONES
 
 exports.all = function(cb) {
 	Station.find({}, cb);
 };
 
-exports.findById = function(id, cb) {
-	Station.findById(id, cb);
+exports.get = function(name, cb) {
+	Station.findOne({"name": name}, cb);
 };
 
 exports.add = function(newStation, cb) {
@@ -25,15 +28,14 @@ exports.add = function(newStation, cb) {
 		zone: 		newStation.zone,
 		name:   	newStation.name,
 		latitude: 	newStation.latitude,
-		longitude: 	newStation.longitude,
+		longitude: 	newStation.longitude
 	});
 
 	station.save(cb);
 };
 
-exports.update = function(id, newStation, cb) {
-	Station.findById(id, function(err, station) {
-		station.name 		= newStation.name || station.name;
+exports.update = function(name, newStation, cb) {
+	Station.findOne({"name": name}, function(err, station) {
 		station.latitude 	= newStation.latitude || station.latitude;
 		station.longitude 	= newStation.longitude || station.longitude;
 
@@ -41,6 +43,6 @@ exports.update = function(id, newStation, cb) {
 	});
 };
 
-exports.delete = function(id, cb) {
-	Station.findByIdAndRemove(id, cb);
+exports.delete = function(name, cb) {
+	Station.findOneAndRemove({"name": name}, cb);
 };

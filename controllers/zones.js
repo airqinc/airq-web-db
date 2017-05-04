@@ -13,7 +13,7 @@ router.get('/', function(req, res) {
 
 //GET - Devuelve una zona por nombre
 router.get('/:name', function(req, res) {
-	Zone.findByName(req.params.name, function(err, data) {
+	Zone.get(req.params.name, function(err, data) {
 	    if(err) return res.status(500).send(err.message);
 		res.status(200).jsonp(data);
 	})
@@ -50,7 +50,6 @@ router.put('/:name', function(req, res) {
 		area: 			req.body.area,
 		time_zone: 		req.body.time_zone,
 	};
-
 
 	Zone.update(req.params.name, zone, function(err, data) {
 	    if(err) return res.status(500).send(err.message);

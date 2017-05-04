@@ -16,14 +16,15 @@ var zoneSchema = new mongoose.Schema({
 	suscriptions: 	[ObjectId]	
 });
 
-//OPERACIONES
 var Zone = connections[dbs.db2.name].model('Zone', zoneSchema);
+
+//OPERACIONES
 
 exports.all = function(cb) {
 	Zone.find({}, cb);
 };
 
-exports.findByName = function(name, cb) {
+exports.get = function(name, cb) {
 	Zone.findOne({"name": name}, cb);
 };
 
@@ -36,7 +37,7 @@ exports.add = function(newZone, cb) {
 			zip: 		newZone.city_zip,
 		},
 		area: 			newZone.area,
-		time_zone: 		newZone.time_zone,
+		time_zone: 		newZone.time_zone
 	});
 
 	zone.save(cb);
@@ -61,10 +62,10 @@ exports.delete = function(name, cb) {
 
 //OPERACIONES ADICIONALES
 
-exports.addStation = function(name, id_station) {
+exports.addStation = function(name, station) {
 	Zone.findOne({"name": name}, function(err, zone) {
-		if (zone.stations.indexOf(id_station) == -1){
-			zone.stations.push(id_station);
+		if (zone.stations.indexOf(station) == -1){
+			zone.stations.push(station);
 			zone.save(function(err, data) {
 			    if(err) return res.status(500).send(err.message);
 			});
@@ -72,9 +73,9 @@ exports.addStation = function(name, id_station) {
 	});
 };
 
-exports.deleteStation = function(name, id_station) {
+exports.deleteStation = function(name, station) {
 	Zone.findOne({"name": name}, function(err, zone) {
-		var index = zone.stations.indexOf(id_station)
+		var index = zone.stations.indexOf(station)
 
 		if (index != -1){
 			zone.stations.splice(index, 1);
